@@ -1,11 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from io import StringIO
 from datetime import datetime
 
 
 # Lê o arquivo de vendas. Ajuste o nome das colunas ou o caminho se necessário.
-df = pd.read_csv("../vendas.csv", parse_dates=["dados"])
+# Use o arquivo local `vendas.csv` para evitar interpretações de escape em strings.
+df = pd.read_csv("vendas.csv", parse_dates=["dados"])
 
 # Análises iniciais do DataFrame
 buffer_info = StringIO()
@@ -118,3 +120,5 @@ Dimensões (linhas, colunas): {shape_text}
 
 with open("relatorio_vendas.txt", "w", encoding="utf-8") as f:
     f.write(relatorio_txt)
+
+
