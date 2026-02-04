@@ -79,10 +79,8 @@ The goal is to practice data cleaning, aggregation, and basic analytics using Py
 
 <pre>
 import pandas as pd
-
 df = pd.read_csv("analise.csv")
 df["dados"] = pd.to_datetime(df["dados"])
-
 print(df.head())
 </pre>
 
@@ -103,9 +101,7 @@ print(df.head())
 
 <pre>
 df["revenue"] = df["quantidade"] * df["preço"]
-
 revenue_by_product = df.groupby("produto")["revenue"].sum()
-
 print(revenue_by_product)
 </pre>
 
