@@ -79,5 +79,15 @@ if arquivo:
 
     # ----- GRÁFICO 2 -----
     st.subhead
+    st.subheader("📊 Receita por produto")
+
+    fig2 = plt.figure()
+    vendas_prod["receita_total"].plot(kind="bar")
+    plt.xlabel("Produto")
+    plt.ylabel("Receita (€)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    st.pyplot(fig2)
 
 
