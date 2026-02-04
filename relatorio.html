@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Relatório de Vendas</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; }}
+        h1, h2, h3 {{ color: #333; }}
+        table {{ border-collapse: collapse; width: 100%; margin-bottom: 20px; }}
+        th, td {{ border: 1px solid #ccc; padding: 8px; text-align: left; }}
+        th {{ background-color: #f2f2f2; }}
+        .highlight {{ font-weight: bold; }}
+        img {{ max-width: 100%; height: auto; margin-bottom: 20px; }}
+        pre {{ background-color: #f8f8f8; padding: 10px; overflow-x: auto; }}
+    </style>
+</head>
+<body>
+    <h1>Relatório de Vendas</h1>
+    <p>Gerado em: {agora}</p>
+
+    <h2>Informações gerais do DataFrame</h2>
+    <p><span class="highlight">Colunas:</span> {columns_text}</p>
+    <p><span class="highlight">Dimensões (linhas, colunas):</span> {shape_text}</p>
+
+    <h2>Primeiras linhas</h2>
+    <pre>{head_text}</pre>
+
+    <h2>Info</h2>
+    <pre>{info_text}</pre>
+
+    <h2>Estatísticas descritivas</h2>
+    <pre>{describe_text}</pre>
+
+    <h2>Valores nulos por coluna</h2>
+    <pre>{nulls_text}</pre>
+
+    <h2>Vendas por mês (unidades)</h2>
+    {vendas_por_mes.to_frame(name="quantidade").to_html()}
+
+    <h2>Vendas por produto</h2>
+    {vendas_prod.to_html()}
+
+    <h2>Destaques</h2>
+    <p>{texto_mais_vendido}</p>
+    <p>{texto_mais_receita}</p>
+
+    <h2>Gráficos</h2>
+    <h3>Vendas por mês</h3>
+    <img src="vendas_por_mes.png" alt="Gráfico de vendas por mês" />
+
+    <h3>Top 5 produtos por receita</h3>
+    <img src="top5_produtos.png" alt="Gráfico top 5 produtos por receita" />
+</body>
+</html>

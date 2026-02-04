@@ -1,0 +1,11 @@
+{
+    "venvPath": ".",
+    "venv": "sales_analysis",
+    "executionEnvironments": [
+        {
+            "root": "sales_analysis",
+            "pythonVersion": "3.14",
+            "pythonPlatform": "Windows"
+        }
+    ]
+}
