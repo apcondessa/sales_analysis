@@ -1,124 +1,83 @@
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-
 from io import StringIO
 from datetime import datetime
 
+st.set_page_config(page_title="Dashboard de Vendas", layout="wide")
 
-# Lê o arquivo de vendas. Ajuste o nome das colunas ou o caminho se necessário.
-# Use o arquivo local `vendas.csv` para evitar interpretações de escape em strings.
-df = pd.read_csv("vendas.csv", parse_dates=["dados"])
+st.title("📊 Dashboard de Vendas")
 
-# Análises iniciais do DataFrame
-buffer_info = StringIO()
-df.info(buf=buffer_info)
-info_text = buffer_info.getvalue()
+# Upload do CSV
+arquivo = st.file_uploader("Envie o arquivo vendas.csv", type="csv")
 
-head_text = df.head().to_string()
-describe_text = df.describe().to_string()
-nulls_text = df.isnull().sum().to_string()
-columns_text = df.columns.to_list()
-shape_text = str(df.shape)
+if arquivo:
 
-print(head_text)
-print(info_text)
-print(describe_text)
-print(nulls_text)
-print(columns_text)
-print(shape_text)
+    df = pd.read_csv(arquivo, parse_dates=["dados"])
 
-# Cria a coluna de mês a partir da coluna de data
-df["mes"] = df["dados"].dt.to_period("M")
+    st.subheader("📄 Prévia dos dados")
+    st.dataframe(df.head())
 
-# Vendas (quantidade) por mês
-vendas_por_mes = df.groupby("mes")["quantidade"].sum()
-print("Vendas por mês (unidades):")
-print(vendas_por_mes)
+    # Info dataframe
+    buffer_info = StringIO()
+    df.info(buf=buffer_info)
+    info_text = buffer_info.getvalue()
 
-# Calcula a receita (quantidade * preço)
-df["receita"] = df["quantidade"] * df["preço"]
+    st.subheader("ℹ️ Informações gerais")
+    st.text(info_text)
 
-# Vendas agregadas por produto
-vendas_prod = df.groupby("produto").agg(
-    quantidade_total=("quantidade", "sum"),
-    receita_total=("receita", "sum"),
-)
+    st.subheader("📈 Estatísticas descritivas")
+    st.dataframe(df.describe())
 
-# Produto mais vendido em unidades
-mais_vendido = vendas_prod["quantidade_total"].idxmax()
+    st.subheader("❗ Valores nulos")
+    st.write(df.isnull().sum())
 
-# Produto com maior receita
-mais_receita = vendas_prod["receita_total"].idxmax()
+    # Cria coluna mês
+    df["mes"] = df["dados"].dt.to_period("M")
 
-texto_mais_vendido = (
-    f"Produto mais vendido em unidades: {mais_vendido} "
-    f"(total: {vendas_prod.loc[mais_vendido, 'quantidade_total']})"
-)
-texto_mais_receita = (
-    f"Produto com maior receita: {mais_receita} "
-    f"(total: {vendas_prod.loc[mais_receita, 'receita_total']:.2f} €)"
-)
+    # Receita
+    df["receita"] = df["quantidade"] * df["preço"]
 
-print(texto_mais_vendido)
-print(texto_mais_receita)
+    # Vendas por mês
+    vendas_por_mes = df.groupby("mes")["quantidade"].sum()
+    vendas_por_mes.index = vendas_por_mes.index.astype(str)
 
-# ----- Gráficos -----
-vendas_por_mes.index = vendas_por_mes.index.astype(str)
+    # Vendas por produto
+    vendas_prod = df.groupby("produto").agg(
+        quantidade_total=("quantidade", "sum"),
+        receita_total=("receita", "sum"),
+    )
 
-plt.figure(figsize=(6, 4))
-vendas_por_mes.plot(kind="bar")
-plt.title("Vendas por mês (unidades)")
-plt.xlabel("Mês")
-plt.ylabel("Vendas (unidades)")
-plt.tight_layout()
-plt.savefig("vendas_por_mes.png")
-plt.close()
+    # KPIs
+    mais_vendido = vendas_prod["quantidade_total"].idxmax()
+    mais_receita = vendas_prod["receita_total"].idxmax()
 
-top5 = vendas_prod.nlargest(5, "receita_total")
+    col1, col2 = st.columns(2)
 
-plt.figure(figsize=(6, 4))
-plt.bar(top5.index, top5["receita_total"])
-plt.title("Top 5 produtos por receita")
-plt.ylabel("Receita (€)")
-plt.xlabel("Produto")
-plt.tight_layout()
-plt.savefig("top5_produtos.png")
-plt.close()
+    col1.metric(
+        "🏆 Produto mais vendido",
+        mais_vendido,
+        f"{vendas_prod.loc[mais_vendido, 'quantidade_total']} unidades"
+    )
 
-# ----- Relatórios em TXT e HTML -----
-agora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    col2.metric(
+        "💰 Maior receita",
+        mais_receita,
+        f"€ {vendas_prod.loc[mais_receita, 'receita_total']:.2f}"
+    )
 
-relatorio_txt = f"""
-RELATÓRIO DE VENDAS
-Gerado em: {agora}
+    # ----- GRÁFICO 1 -----
+    st.subheader("📊 Vendas por mês")
 
-=== Informações gerais do DataFrame ===
-Colunas: {columns_text}
-Dimensões (linhas, colunas): {shape_text}
+    fig1 = plt.figure()
+    vendas_por_mes.plot(kind="bar")
+    plt.xlabel("Mês")
+    plt.ylabel("Unidades")
+    plt.tight_layout()
 
-=== Primeiras linhas ===
-{head_text}
+    st.pyplot(fig1)
 
-=== Info ===
-{info_text}
-
-=== Estatísticas descritivas ===
-{describe_text}
-
-=== Valores nulos por coluna ===
-{nulls_text}
-
-=== Vendas por mês (unidades) ===
-{vendas_por_mes.to_string()}
-
-=== Vendas por produto ===
-{vendas_prod.to_string()}
-
-{texto_mais_vendido}
-{texto_mais_receita}
-"""
-
-with open("relatorio_vendas.txt", "w", encoding="utf-8") as f:
-    f.write(relatorio_txt)
+    # ----- GRÁFICO 2 -----
+    st.subhead
 
 
