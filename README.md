@@ -1,92 +1,136 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Análise de Vendas — Dataset Sintético</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: auto;
-            padding: 40px;
-            line-height: 1.6;
-            background-color: #fafafa;
-        }
-
-        h1, h2 {
-            color: #333;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f0f0f0;
-        }
-
-        code {
-            background: #eee;
-            padding: 4px;
-        }
-
-        pre {
-            background: #eee;
-            padding: 15px;
-            overflow-x: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Sales CSV Analysis</title>
 </head>
 
 <body>
 
-<h1>📊 Análise Técnica — Dataset Sintético de Vendas</h1>
+<h1>Sales Data Analysis</h1>
 
 <p>
-Este projeto apresenta uma análise exploratória de um conjunto de dados sintéticos de vendas armazenado no arquivo <strong>analise.csv</strong>.
-O objetivo é aplicar técnicas de manipulação, agregação e visualização de dados utilizando Python.
+This project contains an exploratory analysis of a synthetic sales dataset stored in <strong>analise.csv</strong>.
+The goal is to practice data cleaning, aggregation, and basic analytics using Python.
 </p>
 
 <hr>
 
-<h2>📁 Estrutura do Dataset</h2>
+<h2>Dataset Structure</h2>
 
-<table>
+<table border="1" cellpadding="6">
 <tr>
-    <th>Coluna</th>
-    <th>Tipo</th>
-    <th>Descrição</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
+
 <tr>
-    <td>dados</td>
-    <td>Date</td>
-    <td>Data da transação</td>
+<td>dados</td>
+<td>Date</td>
+<td>Transaction date</td>
 </tr>
+
 <tr>
-    <td>produto</td>
-    <td>String</td>
-    <td>Nome do produto</td>
+<td>produto</td>
+<td>String</td>
+<td>Product name</td>
 </tr>
+
 <tr>
-    <td>quantidade</td>
-    <td>Integer</td>
-    <td>Unidades vendidas</td>
+<td>quantidade</td>
+<td>Integer</td>
+<td>Units sold</td>
 </tr>
+
 <tr>
-    <td>preço</td>
-    <td>Float</td>
-    <td>Preço unitário</td>
+<td>preço</td>
+<td>Float</td>
+<td>Unit price</td>
 </tr>
+
 </table>
 
 <hr>
 
-<h2>🎯 Obje
+<h2>Analysis Objectives</h2>
+
+<ul>
+<li>Total revenue calculation</li>
+<li>Top selling products</li>
+<li>Daily sales volume</li>
+<li>Average ticket size</li>
+</ul>
+
+<hr>
+
+<h2>Technology Stack</h2>
+
+<ul>
+<li>Python 3</li>
+<li>Pandas</li>
+<li>Matplotlib (optional)</li>
+<li>Jupyter Notebook or VS Code</li>
+</ul>
+
+<hr>
+
+<h2>Load Dataset</h2>
+
+<pre>
+import pandas as pd
+
+df = pd.read_csv("analise.csv")
+df["dados"] = pd.to_datetime(df["dados"])
+
+print(df.head())
+</pre>
+
+<hr>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>Revenue = quantity * price</li>
+<li>Revenue per product</li>
+<li>Sales per day</li>
+<li>Average order value</li>
+</ul>
+
+<hr>
+
+<h2>Aggregation Example</h2>
+
+<pre>
+df["revenue"] = df["quantidade"] * df["preço"]
+
+revenue_by_product = df.groupby("produto")["revenue"].sum()
+
+print(revenue_by_product)
+</pre>
+
+<hr>
+
+<h2>Notes</h2>
+
+<ul>
+<li>Dataset is fully synthetic</li>
+<li>No real business data</li>
+<li>Educational purpose only</li>
+<li>Focused on EDA fundamentals</li>
+</ul>
+
+<hr>
+
+<h2>Next Steps</h2>
+
+<ul>
+<li>Add charts</li>
+<li>Create dashboard</li>
+<li>Time series analysis</li>
+<li>Export KPIs</li>
+</ul>
+
+</body>
+</html>
+
