@@ -78,7 +78,6 @@ if arquivo:
     st.pyplot(fig1)
 
     # ----- GRÁFICO 2 -----
-    st.subhead
     st.subheader("📊 Receita por produto")
 
     fig2 = plt.figure()
@@ -89,5 +88,6 @@ if arquivo:
     plt.tight_layout()
 
     st.pyplot(fig2)
+
 
 
